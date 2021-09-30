@@ -2,6 +2,7 @@ import React, { ChangeEvent, MouseEvent, useState } from "react";
 import { ChipDismissible } from ".";
 import styles from "./InternalChip.css";
 import { ChipDismissibleProps } from "./ChipsTypes";
+import { Menu } from "../Menu";
 
 export function InternalChipDismissible({
   children,
@@ -28,19 +29,46 @@ export function InternalChipDismissible({
         );
       })}
 
-      <input
-        type="text"
-        value={searchValue}
-        onChange={handleSearchChange}
-        onKeyDown={handleKeyDown}
+      <Menu
+        activator={
+          <input
+            type="text"
+            value={searchValue}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
+          />
+        }
+        items={availableOptions()}
       />
     </div>
   );
 
+  function availableOptions() {
+    const selectableOptions = children
+      .map(chip => chip.props)
+      .filter(chip => {
+        return (
+          !selected.includes(chip.value) &&
+          chip.label.toLowerCase().match(searchValue.toLowerCase())
+        );
+      });
+    const options = selectableOptions.map(chip => ({
+      label: chip.label,
+      onClick: () => handleChipAdd(chip.value),
+    }));
+
+    searchValue &&
+      options.push({
+        label: searchValue,
+        onClick: () => handleCustomAdd(searchValue),
+      });
+    return [{ actions: options }];
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === "Tab") {
+    if (event.key === "Tab" || event.key === "Enter") {
       event.preventDefault();
-      handleChipAdd(searchValue);
+      handleCustomAdd(searchValue);
     }
   }
 
@@ -53,6 +81,11 @@ export function InternalChipDismissible({
   }
 
   function handleChipAdd(value: string) {
+    setSearchValue("");
+    onChange([...selected, value]);
+  }
+
+  function handleCustomAdd(value: string) {
     setSearchValue("");
     onCustomAdd(value);
   }
