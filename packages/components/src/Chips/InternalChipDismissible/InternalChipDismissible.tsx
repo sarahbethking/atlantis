@@ -1,8 +1,8 @@
 import React, { ChangeEvent, MouseEvent, useState } from "react";
-import { ChipDismissible } from ".";
-import styles from "./InternalChip.css";
-import { ChipDismissibleProps } from "./ChipsTypes";
-import { Menu } from "../Menu";
+import styles from "./InternalChipDismissible.css";
+import { ChipDismissible } from "..";
+import { ChipDismissibleProps } from "../ChipsTypes";
+import { Menu } from "../../Menu";
 
 export function InternalChipDismissible({
   children,
