@@ -10,6 +10,7 @@ interface ChipDismissibleInputProps {
   onTab(value: string): void;
   onEnter(value: string): void;
   onBlur(value: string): void;
+  onOptionSelect(value: string): void;
 }
 
 export function InternalChipDismissibleInput({
@@ -18,12 +19,16 @@ export function InternalChipDismissibleInput({
   onTab,
   onEnter,
   onBlur,
+  onOptionSelect,
 }: ChipDismissibleInputProps) {
   const [searchValue, setSearchValue] = useState("");
   const [shouldCancelBlur, setShouldCancelBlur] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   // eslint-disable-next-line no-null/no-null
   const inputRef = useRef<HTMLInputElement>(null);
+  const filteredOptions = options.filter(option =>
+    option.label.toLowerCase().match(searchValue.toLowerCase()),
+  );
 
   return (
     <>
@@ -39,9 +44,9 @@ export function InternalChipDismissibleInput({
         autoFocus={true}
       />
 
-      {menuOpen && (
+      {menuOpen && filteredOptions.length > 0 && (
         <div className={styles.menu}>
-          {options.map(option => {
+          {filteredOptions.map(option => {
             return (
               <button
                 key={option.value}
@@ -69,7 +74,7 @@ export function InternalChipDismissibleInput({
   function handleOptionClick(value: string) {
     return () => {
       inputRef.current?.focus();
-      console.log(value);
+      onOptionSelect(value);
     };
   }
 

@@ -37,6 +37,7 @@ export function InternalChipDismissible({
       {inputVisible ? (
         <InternalChipDismissibleInput
           options={availabelChipOptions}
+          onOptionSelect={handleChipAdd}
           onEmptyBackspace={handleEmptyBackspace}
           onTab={handleCustomAdd}
           onEnter={handleCustomAdd}
@@ -64,10 +65,9 @@ export function InternalChipDismissible({
     return () => onChange(selected.filter(val => val !== value));
   }
 
-  // function handleChipAdd(value: string) {
-  //   setSearchValue("");
-  //   onChange([...selected, value]);
-  // }
+  function handleChipAdd(value: string) {
+    onChange([...selected, value]);
+  }
 
   function handleCustomAdd(value: string) {
     onCustomAdd(value);
