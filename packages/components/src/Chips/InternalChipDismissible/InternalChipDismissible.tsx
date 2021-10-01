@@ -13,9 +13,13 @@ export function InternalChipDismissible({
   onCustomAdd,
 }: ChipDismissibleProps) {
   const [inputVisible, setInputVisible] = useState(false);
-  const visibleChipOptions = children
-    .map(chip => chip.props)
-    .filter(chip => selected.includes(chip.value));
+  const chipOptions = children.map(chip => chip.props);
+  const visibleChipOptions = chipOptions.filter(chip =>
+    selected.includes(chip.value),
+  );
+  const availabelChipOptions = chipOptions.filter(
+    chip => !selected.includes(chip.value),
+  );
 
   return (
     <div className={styles.wrapper} data-testid="multiselect-chips">
@@ -32,10 +36,13 @@ export function InternalChipDismissible({
 
       {inputVisible ? (
         <InternalChipDismissibleInput
+          options={availabelChipOptions}
           onEmptyBackspace={handleEmptyBackspace}
           onTab={handleCustomAdd}
           onEnter={handleCustomAdd}
-          onBlur={value => !value && setInputVisible(false)}
+          onBlur={value => {
+            !value && setInputVisible(false);
+          }}
         />
       ) : (
         <Button
