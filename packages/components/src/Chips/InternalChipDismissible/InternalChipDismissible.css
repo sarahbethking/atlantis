@@ -2,7 +2,6 @@
   display: flex;
   position: relative;
   box-sizing: border-box;
-  padding: var(--space-smaller) 0;
   border: var(--border-base) solid transparent;
   border-radius: var(--radius-base);
   transition: all var(--timing-base);
@@ -12,7 +11,7 @@
 }
 
 .wrapper:focus-within {
-  padding-left: var(--space-smaller);
+  padding: var(--space-smaller);
   border-color: var(--color-focus);
 }
 

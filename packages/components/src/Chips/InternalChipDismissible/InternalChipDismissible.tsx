@@ -1,4 +1,5 @@
 import React, { MouseEvent, useState } from "react";
+import { sortBy } from "lodash";
 import styles from "./InternalChipDismissible.css";
 import { InternalChipDismissibleInput } from "./InternalChipDismissibleInput";
 import { ChipDismissible } from "..";
@@ -17,13 +18,16 @@ export function InternalChipDismissible({
   const visibleChipOptions = chipOptions.filter(chip =>
     selected.includes(chip.value),
   );
-  const availabelChipOptions = chipOptions.filter(
+  const sortedVisibleChipOptions = sortBy(visibleChipOptions, chip =>
+    selected.indexOf(chip.value),
+  );
+  const availableChipOptions = chipOptions.filter(
     chip => !selected.includes(chip.value),
   );
 
   return (
     <div className={styles.wrapper} data-testid="multiselect-chips">
-      {visibleChipOptions.map(chip => {
+      {sortedVisibleChipOptions.map(chip => {
         return (
           <ChipDismissible
             key={chip.value}
@@ -36,11 +40,10 @@ export function InternalChipDismissible({
 
       {inputVisible ? (
         <InternalChipDismissibleInput
-          options={availabelChipOptions}
+          options={availableChipOptions}
           onOptionSelect={handleChipAdd}
+          onCustomOptionAdd={handleCustomAdd}
           onEmptyBackspace={handleEmptyBackspace}
-          onTab={handleCustomAdd}
-          onEnter={handleCustomAdd}
           onBlur={value => {
             !value && setInputVisible(false);
           }}

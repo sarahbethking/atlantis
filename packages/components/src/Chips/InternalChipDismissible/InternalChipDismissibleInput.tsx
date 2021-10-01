@@ -7,18 +7,16 @@ import { Text } from "../../Text";
 interface ChipDismissibleInputProps {
   readonly options: ChipProps[];
   onEmptyBackspace(): void;
-  onTab(value: string): void;
-  onEnter(value: string): void;
   onBlur(value: string): void;
+  onCustomOptionAdd(value: string): void;
   onOptionSelect(value: string): void;
 }
 
 export function InternalChipDismissibleInput({
   options,
   onEmptyBackspace,
-  onTab,
-  onEnter,
   onBlur,
+  onCustomOptionAdd,
   onOptionSelect,
 }: ChipDismissibleInputProps) {
   const [searchValue, setSearchValue] = useState("");
@@ -67,6 +65,7 @@ export function InternalChipDismissibleInput({
 
   function handleBlur() {
     if (shouldCancelBlur) return;
+    setSearchValue("");
     setMenuOpen(false);
     onBlur(searchValue);
   }
@@ -83,21 +82,15 @@ export function InternalChipDismissibleInput({
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.shiftKey) return;
     if (event.key === "Backspace" && searchValue.length === 0) {
       return onEmptyBackspace();
     }
 
-    if (searchValue.length) {
-      if (event.key === "Tab") {
-        event.preventDefault();
-        setSearchValue("");
-        return onTab(searchValue);
-      }
-      if (event.key === "Enter") {
-        event.preventDefault();
-        setSearchValue("");
-        return onEnter(searchValue);
-      }
+    if (searchValue.length && ["Tab", "Enter", ","].includes(event.key)) {
+      event.preventDefault();
+      setSearchValue("");
+      onCustomOptionAdd(searchValue);
     }
   }
 }
