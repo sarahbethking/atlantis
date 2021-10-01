@@ -16,7 +16,7 @@
 .input {
   flex: 1;
   min-width: 120px;
-  padding: var(--space-small);
+  padding: var(--space-small) 0;
   border: none;
   border-radius: 0;
   color: inherit;

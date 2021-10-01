@@ -1,5 +1,6 @@
-import React, { ChangeEvent, MouseEvent, useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import styles from "./InternalChipDismissible.css";
+import { InternalChipDismissibleInput } from "./InternalChipDismissibleInput";
 import { ChipDismissible } from "..";
 import { ChipDismissibleProps } from "../ChipsTypes";
 import { Button } from "../../Button";
@@ -11,7 +12,6 @@ export function InternalChipDismissible({
   onClick,
   onCustomAdd,
 }: ChipDismissibleProps) {
-  const [searchValue, setSearchValue] = useState("");
   const [inputVisible, setInputVisible] = useState(false);
   const visibleChipOptions = children
     .map(chip => chip.props)
@@ -31,14 +31,11 @@ export function InternalChipDismissible({
       })}
 
       {inputVisible ? (
-        <input
-          className={styles.input}
-          type="text"
-          value={searchValue}
-          onChange={handleSearchChange}
-          onKeyDown={handleKeyDown}
-          onBlur={() => !searchValue && setInputVisible(false)}
-          autoFocus={true}
+        <InternalChipDismissibleInput
+          onEmptyBackspace={handleEmptyBackspace}
+          onTab={handleCustomAdd}
+          onEnter={handleCustomAdd}
+          onBlur={value => !value && setInputVisible(false)}
         />
       ) : (
         <Button
@@ -52,6 +49,10 @@ export function InternalChipDismissible({
     </div>
   );
 
+  function handleEmptyBackspace() {
+    handleChipRemove(selected[selected.length - 1])();
+  }
+
   function handleChipRemove(value: string) {
     return () => onChange(selected.filter(val => val !== value));
   }
@@ -62,27 +63,7 @@ export function InternalChipDismissible({
   // }
 
   function handleCustomAdd(value: string) {
-    setSearchValue("");
     onCustomAdd(value);
-  }
-
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (
-      event.key === "Backspace" &&
-      selected.length &&
-      searchValue.length === 0
-    ) {
-      handleChipRemove(selected[selected.length - 1])();
-    }
-
-    if ((event.key === "Tab" || event.key === "Enter") && searchValue.length) {
-      event.preventDefault();
-      handleCustomAdd(searchValue);
-    }
-  }
-
-  function handleSearchChange(event: ChangeEvent<HTMLInputElement>) {
-    setSearchValue(event.currentTarget.value);
   }
 
   function handleChipClick(value: string) {
