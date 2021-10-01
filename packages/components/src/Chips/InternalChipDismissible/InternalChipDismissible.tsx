@@ -2,7 +2,7 @@ import React, { ChangeEvent, MouseEvent, useState } from "react";
 import styles from "./InternalChipDismissible.css";
 import { ChipDismissible } from "..";
 import { ChipDismissibleProps } from "../ChipsTypes";
-import { Menu } from "../../Menu";
+import { Button } from "../../Button";
 
 export function InternalChipDismissible({
   children,
@@ -12,6 +12,7 @@ export function InternalChipDismissible({
   onCustomAdd,
 }: ChipDismissibleProps) {
   const [searchValue, setSearchValue] = useState("");
+  const [inputVisible, setInputVisible] = useState(false);
   const visibleChipOptions = children
     .map(chip => chip.props)
     .filter(chip => selected.includes(chip.value));
@@ -29,50 +30,36 @@ export function InternalChipDismissible({
         );
       })}
 
-      <Menu
-        activator={
-          <input
-            type="text"
-            value={searchValue}
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
-          />
-        }
-        items={availableOptions()}
-      />
+      {inputVisible ? (
+        <input
+          className={styles.input}
+          type="text"
+          value={searchValue}
+          onChange={handleSearchChange}
+          onKeyDown={handleKeyDown}
+          onBlur={() => !searchValue && setInputVisible(false)}
+          autoFocus={true}
+        />
+      ) : (
+        <Button
+          icon="add"
+          type="secondary"
+          size="small"
+          ariaLabel="Add" // FIXME
+          onClick={() => setInputVisible(true)}
+        />
+      )}
     </div>
   );
-
-  function availableOptions() {
-    const selectableOptions = children
-      .map(chip => chip.props)
-      .filter(chip => {
-        return (
-          !selected.includes(chip.value) &&
-          chip.label.toLowerCase().match(searchValue.toLowerCase())
-        );
-      });
-    const options = selectableOptions.map(chip => ({
-      label: chip.label,
-      onClick: () => handleChipAdd(chip.value),
-    }));
-
-    searchValue &&
-      options.push({
-        label: searchValue,
-        onClick: () => handleCustomAdd(searchValue),
-      });
-    return [{ actions: options }];
-  }
 
   function handleChipRemove(value: string) {
     return () => onChange(selected.filter(val => val !== value));
   }
 
-  function handleChipAdd(value: string) {
-    setSearchValue("");
-    onChange([...selected, value]);
-  }
+  // function handleChipAdd(value: string) {
+  //   setSearchValue("");
+  //   onChange([...selected, value]);
+  // }
 
   function handleCustomAdd(value: string) {
     setSearchValue("");

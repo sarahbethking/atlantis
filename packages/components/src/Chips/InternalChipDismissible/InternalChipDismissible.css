@@ -12,3 +12,22 @@
 /* .wrapper:focus-within {
   border-color: var(--color-focus);
 } */
+
+.input {
+  flex: 1;
+  min-width: 120px;
+  padding: var(--space-small);
+  border: none;
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-size: var(--typography--fontSize-base);
+  line-height: var(--typography--lineHeight-base);
+  background: transparent;
+  appearance: none;
+}
+
+.input:focus {
+  outline: none;
+}
