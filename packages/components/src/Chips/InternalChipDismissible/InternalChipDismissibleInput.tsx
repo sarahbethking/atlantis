@@ -72,6 +72,7 @@ export function InternalChipDismissibleInput({
 
   function handleOptionClick(value: string) {
     return () => {
+      setSearchValue("");
       inputRef.current?.focus();
       onOptionSelect(value);
     };
